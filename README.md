@@ -1,1 +1,3 @@
-# Oracle-Imitating-Selection
+## Oracle-Imitating-Selection
+
+![Framework](framework.png)

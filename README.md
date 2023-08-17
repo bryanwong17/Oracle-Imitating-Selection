@@ -1,5 +1,9 @@
 # Oracle Imitating Selection
 
+## Framework Overview
+
+![Framework](framework.png)
+
 ## Purpose
 
 To develop more effective Active Learning (AL) patch recommendations
@@ -19,7 +23,3 @@ To develop more effective Active Learning (AL) patch recommendations
 ## Active Learning Strategy
 
 The project implements an AL strategy that combines the uncertainty from the AL process and the probability of oracle selection from the oracle-imitating selection model.
-
-## Framework Overview
-
-![Framework](framework.png)

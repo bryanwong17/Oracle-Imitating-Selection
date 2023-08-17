@@ -62,13 +62,11 @@ class PatchesDataset(torch.utils.data.Dataset):
             image = self.transforms(image)
         
         # one hot encode the wsi_gt and patch_pred variables
-
         wsi_gt_one_hot = torch.tensor(self.class_mapping[wsi_gt])
         patch_pred_one_hot = torch.tensor(self.class_mapping[patch_pred])
 
         patch_conf_score = torch.tensor(patch_conf_score)
 
-        # 3 + 3 + 1 = 7 dims
         meta_info = [wsi_gt_one_hot, patch_pred_one_hot, patch_conf_score]
 
         return image, meta_info, label

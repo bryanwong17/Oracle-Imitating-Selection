@@ -294,7 +294,7 @@ def fit_gpu(feature_extractor_model, oracle_imitation_model, save_results_path, 
         if not os.path.exists(save_weights_path):
             os.makedirs(save_weights_path)
         torch.save(feature_extractor_model.state_dict(), os.path.join(save_weights_path, f"feature_extractor_weights_{epoch}.pth"))
-        torch.save(oracle_imitation_model.state_dict(), os.path.join(save_weights_path, f"oracle_imitation_weight_{epoch}.pth"))
+        torch.save(oracle_imitation_model.state_dict(), os.path.join(save_weights_path, f"oracle_imitation_weights_{epoch}.pth"))
 
     # load the last epoch model
     last_epoch = epochs

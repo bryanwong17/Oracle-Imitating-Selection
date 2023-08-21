@@ -187,14 +187,14 @@ def main():
         # define which feature extractor to use and oracle imitiation model
 
         if args.model == "resnet18":
-            model = resnet18(pretrained=True)
+            model = resnet18(pretrained=False)
             # strip the last layer
             feature_extractor_model = torch.nn.Sequential(*list(model.children())[:-1])
         elif args.model == "vgg16":
-            model = vgg16(pretrained=True)
+            model = vgg16(pretrained=False)
             # strip the last layer
         elif args.model == "densenet201":
-            model = densenet201(pretrained=True)
+            model = densenet201(pretrained=False)
         else:
             # it will be added soon
             pass
@@ -208,6 +208,7 @@ def main():
 
         # define criterion
         # if not args.weighted_random_sampler:
+        # criterion = nn.CrossEntropyLoss(weight=torch.tensor(class_weight, dtype=torch.float32).to(device))
         criterion = nn.CrossEntropyLoss()
 
         # select optimizer
@@ -219,9 +220,13 @@ def main():
             oracle_imitation_optimizer = torch.optim.Adam(oracle_imitation_model.parameters(), lr=0.1, betas=(0.9, 0.999), weight_decay=0.001)
         
         # define scheduler
-        if args.use_sched and args.sched == "exponential_lr":
-            feature_extractor_scheduler = torch.optim.lr_scheduler.ExponentialLR(feature_extractor_optimizer, gamma=args.gamma)
-            oracle_imitation_scheduler = torch.optim.lr_scheduler.ExponentialLR(oracle_imitation_optimizer, gamma=args.gamma)
+        if args.use_sched:
+            if args.sched == "exponential_lr":
+                feature_extractor_scheduler = torch.optim.lr_scheduler.ExponentialLR(feature_extractor_optimizer, gamma=args.gamma)
+                oracle_imitation_scheduler = torch.optim.lr_scheduler.ExponentialLR(oracle_imitation_optimizer, gamma=args.gamma)
+            elif args.sched == "step_lr":
+                feature_extractor_scheduler = torch.optim.lr_scheduler.StepLR(feature_extractor_optimizer, step_size=10, gamma=0.2)
+                oracle_imitation_scheduler = torch.optim.lr_scheduler.StepLR(oracle_imitation_optimizer, step_size=10, gamma=0.2)
         else:
             feature_extractor_scheduler = None
             oracle_imitation_scheduler = None

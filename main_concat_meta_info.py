@@ -53,6 +53,7 @@ parser.add_argument("--optim", default="sgd", type=str,
 parser.add_argument("--use_sched", action="store_true",
                     help="use scheduler during training if needed")
 parser.add_argument("--sched", default="exponential_lr", type=str,
+                    choices=["step_lr", "exponential_lr"],
                     help="which scheduler to use during training")
 parser.add_argument("--lr", default=0.001, type=float,
                     help="learning rate")

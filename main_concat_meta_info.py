@@ -50,6 +50,8 @@ parser.add_argument("--batch_size", default=32, type=int,
 parser.add_argument("--optim", default="sgd", type=str,
                     choices=["sgd", "adam"],
                     help="which optimizer to use during training")
+parser.add_argument('--momentum', default=0.9, type=float,
+                    help="momentum of the optimizer")
 parser.add_argument("--use_sched", action="store_true",
                     help="use scheduler during training if needed")
 parser.add_argument("--sched", default="exponential_lr", type=str,
@@ -57,10 +59,10 @@ parser.add_argument("--sched", default="exponential_lr", type=str,
                     help="which scheduler to use during training")
 parser.add_argument("--lr", default=0.001, type=float,
                     help="learning rate")
-parser.add_argument('--momentum', default=0.9, type=float,
-                    help="momentum of the optimizer")
+parser.add_argument('--step_size', default=10, type=int,
+                    help="each step size updates the learning rate")
 parser.add_argument('--gamma', default=0.1, type=float,
-                    help="gamma of the scheduler")
+                    help="multiply the learning rate by gamma after step size")
 
 args = parser.parse_args()
 
@@ -188,14 +190,14 @@ def main():
         # define which feature extractor to use and oracle imitiation model
 
         if args.model == "resnet18":
-            model = resnet18(pretrained=False)
+            model = resnet18(pretrained=True)
             # strip the last layer
             feature_extractor_model = torch.nn.Sequential(*list(model.children())[:-1])
         elif args.model == "vgg16":
-            model = vgg16(pretrained=False)
+            model = vgg16(pretrained=True)
             # strip the last layer
         elif args.model == "densenet201":
-            model = densenet201(pretrained=False)
+            model = densenet201(pretrained=True)
         else:
             # it will be added soon
             pass
@@ -246,6 +248,8 @@ def main():
             oracle_imitation_optimizer=oracle_imitation_optimizer,
             feature_extractor_scheduler=feature_extractor_scheduler,
             oracle_imitation_scheduler=oracle_imitation_scheduler,
+            step_size=args.step_size,
+            gamma=args.gamma,
             train_loader=train_loader,
             valid_loader=valid_loader
         )

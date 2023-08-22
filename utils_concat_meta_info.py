@@ -25,7 +25,13 @@ def print_class_distribution(data_df, column_name, dataframe_name):
     print(f"Class Distribution for {dataframe_name}:")
     print(class_distribution)
 
-def train_one_epoch(feature_extractor_model, oracle_imitation_model, train_loader, criterion, feature_extractor_optimizer, oracle_imitation_optimizer, feature_extractor_scheduler, oracle_imitation_scheduler, device):
+def adjust_learning_rate(optimizer, epoch, step_size, gamma):
+
+    if epoch % step_size == 0:
+        for param_group in optimizer.param_groups:
+            param_group['lr'] = param_group['lr'] * gamma
+
+def train_one_epoch(epoch, feature_extractor_model, oracle_imitation_model, train_loader, criterion, feature_extractor_optimizer, oracle_imitation_optimizer, feature_extractor_scheduler, oracle_imitation_scheduler, step_size, gamma, device):
     train_loss = 0.0
     correct = 0
     total = 0
@@ -80,11 +86,14 @@ def train_one_epoch(feature_extractor_model, oracle_imitation_model, train_loade
         feature_extractor_optimizer.step()
         oracle_imitation_optimizer.step()
 
-
         # Check if a scheduler exists and use it to update the learning rate
         if feature_extractor_scheduler is not None and oracle_imitation_scheduler is not None:
             feature_extractor_scheduler.step()
             oracle_imitation_scheduler.step()
+        
+        # Adjust learning rate based on epoch
+        adjust_learning_rate(feature_extractor_optimizer, epoch, step_size, gamma)
+        adjust_learning_rate(oracle_imitation_optimizer, epoch, step_size, gamma)
 
     # Calculate acc, auc, precision, and recall using sklearn.metrics
     acc = correct / total
@@ -196,7 +205,7 @@ def test_model(feature_extractor_model, oracle_imitation_model, test_loader, dev
 
     return actual_labels, predicted_labels, predicted_scores
 
-def fit_gpu(feature_extractor_model, oracle_imitation_model, save_results_path, epochs, device, criterion, feature_extractor_optimizer, oracle_imitation_optimizer, feature_extractor_scheduler, oracle_imitation_scheduler, train_loader, valid_loader=None):
+def fit_gpu(feature_extractor_model, oracle_imitation_model, save_results_path, epochs, device, criterion, feature_extractor_optimizer, oracle_imitation_optimizer, feature_extractor_scheduler, oracle_imitation_scheduler, step_size, gamma, train_loader, valid_loader=None):
 
     # keeping track of losses as it happen
     train_losses = []
@@ -217,7 +226,7 @@ def fit_gpu(feature_extractor_model, oracle_imitation_model, save_results_path, 
         print(f"{'='*50}")
         print(f"EPOCH {epoch} - TRAINING...")
         train_loss, train_acc, train_auc, train_precision, train_recall = train_one_epoch(
-            feature_extractor_model, oracle_imitation_model, train_loader, criterion, feature_extractor_optimizer, oracle_imitation_optimizer, feature_extractor_scheduler, oracle_imitation_scheduler, device
+            epoch, feature_extractor_model, oracle_imitation_model, train_loader, criterion, feature_extractor_optimizer, oracle_imitation_optimizer, feature_extractor_scheduler, oracle_imitation_scheduler, step_size, gamma, device
         )
 
         with open(os.path.join(save_results_path, f"full_log.txt"), "a") as f:

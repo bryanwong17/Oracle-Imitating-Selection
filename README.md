@@ -20,6 +20,10 @@ To develop more effective Active Learning (AL) patch recommendations
      - Patch prediction from DenseNet201 pretrained model
      - Patch confidence score from DenseNet201 pretrained model
 
+3. **Unified Model (Version 3)**
+   - Similar to version 2 with the exception that feature extractor and imitation prediction (simple model) are integrated into one
+   - Not fixed validation balanced dataset
+
 ## Active Learning Strategy
 
 Implements an AL strategy that combines the uncertainty from the AL process and the probability of oracle selection from the oracle-imitating selection model

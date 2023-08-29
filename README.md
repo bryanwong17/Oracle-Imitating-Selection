@@ -11,7 +11,7 @@ To develop more effective Active Learning (AL) patch recommendations
 ## Methods
 
 1. **Building Oracle Selection Classification Model (Version 1)**
-   - Construct a classification model for oracle selection
+   - Construct a simple classification model for predicting between two classes: oracle selection or not
 
 2. **Enhanced Model (Version 2)**
    - Extract features from images
@@ -21,8 +21,8 @@ To develop more effective Active Learning (AL) patch recommendations
      - Patch confidence score from DenseNet201 pretrained model
 
 3. **Unified Model (Version 3)**
-   - Similar to version 2 with the exception that feature extractor and imitation prediction (simple model) are integrated into one
-   - Not fixed validation balanced dataset
+   - Similar to Version 2, with the exception that the feature extractor and imitation prediction (simple model) are integrated into a single model
+   - Downsampled validation dataset (balanced) is not fixed. This change is intended to test the model's generalizability more comprehensively
 
 ## Active Learning Strategy
 

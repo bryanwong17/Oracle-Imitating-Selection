@@ -22,7 +22,7 @@ To develop more effective Active Learning (AL) patch recommendations
 
 3. **Unified Model (Version 3)**
    - Similar to Version 2, with the exception that the feature extractor and imitation prediction (simple model) are integrated into a single model
-   - Downsampled validation dataset (balanced) is not fixed. This change is intended to test the model's generalizability more comprehensively
+   - Validate the model to the imbalanced dataset (all)
 
 ## Active Learning Strategy
 
